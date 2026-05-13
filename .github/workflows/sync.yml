@@ -10,12 +10,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Required for subtree to work
           lfs: true
+
+      - name: Config Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # This command isolates the backend folder and pushes its contents to HF
-          git subtree push --prefix backend https://Baazigar111:$HF_TOKEN@huggingface.co/spaces/Baazigar111/talentai-backend main
+          # We use split to create a temporary branch of just the backend folder
+          git subtree push --prefix backend https://Baazigar111:$HF_TOKEN@huggingface.co/spaces/Baazigar111/talentai main
