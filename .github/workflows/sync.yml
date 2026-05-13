@@ -16,6 +16,17 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 1. We only want the contents of 'backend' to go to HF
-          # 2. This ensures the Dockerfile is in the root of the HF Space
-          git subtree push --prefix backend https://Aankit123:$HF_TOKEN@huggingface.co/spaces/Aankit123/talentai-backend main
+          # 1. Setup git identity
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          
+          # 2. Create a temporary folder and copy backend content
+          mkdir temp_sync
+          cp -r backend/* temp_sync/
+          cd temp_sync
+          
+          # 3. Initialize fresh git and push
+          git init -b main
+          git add .
+          git commit -m "Deploy TalentAI Backend"
+          git push --force https://Aankit123:$HF_TOKEN@huggingface.co/spaces/Aankit123/talentai-backend main
