@@ -2,15 +2,6 @@ import pdfplumber
 import docx
 import re
 
-_nlp = None
-
-def get_nlp():
-    global _nlp
-    if _nlp is None:
-        import spacy
-        _nlp = spacy.load("en_core_web_sm")
-    return _nlp
-
 def extract_text_from_pdf(file_path: str) -> str:
     text = ""
     try:
@@ -40,16 +31,11 @@ def extract_name(text: str) -> str:
     for line in lines[:5]:
         words = line.split()
         if (2 <= len(words) <= 5 and len(line) < 60 and "@" not in line
-                and "http" not in line.lower() and not any(c.isdigit() for c in line)
-                and line[0].isupper() and not any(w.lower() in SKIP_WORDS for w in words)):
+                and "http" not in line.lower()
+                and not any(c.isdigit() for c in line)
+                and line[0].isupper()
+                and not any(w.lower() in SKIP_WORDS for w in words)):
             return line
-    try:
-        doc = get_nlp()(text[:500])
-        for ent in doc.ents:
-            if ent.label_ == "PERSON" and len(ent.text.split()) >= 2:
-                return ent.text
-    except:
-        pass
     return lines[0] if lines else ""
 
 def extract_skills(text: str) -> list:
