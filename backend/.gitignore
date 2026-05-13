@@ -1,3 +1,4 @@
+run.py
 __pycache__/
 *.pyc
 .env
@@ -7,6 +8,3 @@ faiss_map.json
 *.bin
 seed.py
 seed_jobs.py
-seed_jobs2.py
-venv/
-.venv/
