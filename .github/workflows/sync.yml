@@ -28,4 +28,5 @@ jobs:
           # 4. Add files and push to HF
           git add .
           git commit -m "Sync from GitHub"
-          git push --force https://Baazigar111:$HF_TOKEN@huggingface.co/spaces/Baazigar111/talentai-backend main
+          # Use this exact line for the push command
+          git push --force https://Aankit123:$HF_TOKEN@huggingface.co/spaces/Aankit123/talentai-backend main
