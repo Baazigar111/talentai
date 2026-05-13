@@ -17,5 +17,5 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # This forces the push to your specific Space
-          git push --force https://Baazigar111:$HF_TOKEN@huggingface.co/spaces/Baazigar111/talentai-backend main
+          # This command isolates the backend folder and pushes its contents to HF
+          git subtree push --prefix backend https://Baazigar111:$HF_TOKEN@huggingface.co/spaces/Baazigar111/talentai-backend main
