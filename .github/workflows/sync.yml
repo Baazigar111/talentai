@@ -1,7 +1,9 @@
 name: Sync to Hugging Face Hub
+
 on:
   push:
     branches: [main]
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -11,22 +13,30 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          lfs: true
 
-      - name: Push to hub
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+
+      - name: Push to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 1. Setup git identity
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
-          
-          # 2. Create a temporary folder and copy backend content
+          # 1. Create a temporary directory to prepare the flat structure
           mkdir temp_sync
-          cp -r backend/* temp_sync/
-          cd temp_sync
           
-          # 3. Initialize fresh git and push
+          # 2. Copy all contents from your backend folder into the temp directory
+          # This ensures main.py and Dockerfile are at the top level for HF
+          cp -r backend/* temp_sync/
+          
+          # 3. Navigate into the temp directory and initialize a fresh repo
+          cd temp_sync
           git init -b main
           git add .
-          git commit -m "Deploy TalentAI Backend"
+          git commit -m "Deploy TalentAI Backend from GitHub Actions"
+          
+          # 4. Force push to the Hugging Face Space
+          # Note: We use your HF username 'Aankit123' and space 'talentai-backend'
           git push --force https://Aankit123:$HF_TOKEN@huggingface.co/spaces/Aankit123/talentai-backend main
