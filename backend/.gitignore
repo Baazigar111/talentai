@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+uploads/
+faiss_index.bin
+faiss_map.json
+*.bin
+seed.py
+seed_jobs.py
+seed_jobs2.py
+venv/
+.venv/
