@@ -1,8 +1,8 @@
 ---
-title: TalentAI Backend
+title: TalentAI
 emoji: 🚀
-colorFrom: indigo
-colorTo: blue
-sdk: fastapi 
+colorFrom: blue
+colorTo: green
+sdk: fastapi
 app_file: main.py
 ---
