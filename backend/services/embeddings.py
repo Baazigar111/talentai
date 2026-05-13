@@ -1,20 +1,21 @@
-from sentence_transformers import SentenceTransformer
 import numpy as np
 
-# Load once at startup (downloads ~90MB first time)
-model = SentenceTransformer('all-MiniLM-L6-v2')
+_model = None
+
+def get_model():
+    global _model
+    if _model is None:
+        from sentence_transformers import SentenceTransformer
+        _model = SentenceTransformer('all-MiniLM-L6-v2')
+    return _model
 
 def generate_embedding(text: str) -> np.ndarray:
-    """Generate embedding vector for any text."""
-    embedding = model.encode(text, convert_to_numpy=True)
-    return embedding
+    return get_model().encode(text, convert_to_numpy=True)
 
 def generate_resume_embedding(candidate: dict) -> np.ndarray:
-    """Create a rich text representation of candidate for embedding."""
     skills = ", ".join(candidate.get("skills") or [])
     education = ", ".join(candidate.get("education") or [])
     experience = str(candidate.get("experience_years", 0))
-    
     text = f"""
     Name: {candidate.get('name', '')}
     Skills: {skills}
@@ -25,7 +26,6 @@ def generate_resume_embedding(candidate: dict) -> np.ndarray:
     return generate_embedding(text.strip())
 
 def generate_job_embedding(job: dict) -> np.ndarray:
-    """Create embedding for job description."""
     skills = ", ".join(job.get("required_skills") or [])
     text = f"""
     Job Title: {job.get('title', '')}
@@ -36,7 +36,6 @@ def generate_job_embedding(job: dict) -> np.ndarray:
     return generate_embedding(text.strip())
 
 def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
-    """Calculate cosine similarity between two vectors."""
     dot = np.dot(vec1, vec2)
     norm = np.linalg.norm(vec1) * np.linalg.norm(vec2)
     if norm == 0:

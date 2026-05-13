@@ -1,15 +1,15 @@
-try:
-    import fitz  # PyMuPDF
-    PYMUPDF_AVAILABLE = True
-except ImportError:
-    PYMUPDF_AVAILABLE = False
-
 import pdfplumber
 import docx
 import re
-import spacy
 
-nlp = spacy.load("en_core_web_sm")
+_nlp = None
+
+def get_nlp():
+    global _nlp
+    if _nlp is None:
+        import spacy
+        _nlp = spacy.load("en_core_web_sm")
+    return _nlp
 
 def extract_text_from_pdf(file_path: str) -> str:
     text = ""
@@ -18,10 +18,7 @@ def extract_text_from_pdf(file_path: str) -> str:
             for page in pdf.pages:
                 text += page.extract_text() or ""
     except Exception as e:
-        if PYMUPDF_AVAILABLE:
-            doc = fitz.open(file_path)
-            for page in doc:
-                text += page.get_text()
+        print(f"PDF extraction error: {e}")
     return text.strip()
 
 def extract_text_from_docx(file_path: str) -> str:
@@ -38,27 +35,23 @@ def extract_phone(text: str) -> str:
 
 def extract_name(text: str) -> str:
     lines = [l.strip() for l in text.split('\n') if l.strip()]
-    
-    # spaCy NER — must be 2+ words
-    doc = nlp(text[:500])
-    for ent in doc.ents:
-        if ent.label_ == "PERSON" and len(ent.text.split()) >= 2:
-            return ent.text
-
-    # Fallback: first short clean line that looks like a name
+    SKIP_WORDS = {"resume", "curriculum", "vitae", "cv", "profile", "contact",
+                  "email", "phone", "address", "linkedin", "github", "portfolio"}
     for line in lines[:5]:
-        if (
-            len(line.split()) >= 2
-            and len(line.split()) <= 5
-            and len(line) < 50
-            and "@" not in line
-            and not any(c.isdigit() for c in line)
-            and line[0].isupper()
-        ):
+        words = line.split()
+        if (2 <= len(words) <= 5 and len(line) < 60 and "@" not in line
+                and "http" not in line.lower() and not any(c.isdigit() for c in line)
+                and line[0].isupper() and not any(w.lower() in SKIP_WORDS for w in words)):
             return line
-
+    try:
+        doc = get_nlp()(text[:500])
+        for ent in doc.ents:
+            if ent.label_ == "PERSON" and len(ent.text.split()) >= 2:
+                return ent.text
+    except:
+        pass
     return lines[0] if lines else ""
-    
+
 def extract_skills(text: str) -> list:
     SKILLS_DB = [
         "Python", "JavaScript", "TypeScript", "React", "Next.js", "Vue",
@@ -94,17 +87,15 @@ def extract_education(text: str) -> list:
             if degree.lower() in line.lower():
                 education.append(line.strip())
                 break
-    return education[:3]  # top 3
+    return education[:3]
 
 def parse_resume(file_path: str, filename: str) -> dict:
-    # Extract text based on file type
     if filename.endswith(".pdf"):
         text = extract_text_from_pdf(file_path)
     elif filename.endswith(".docx"):
         text = extract_text_from_docx(file_path)
     else:
         text = ""
-
     return {
         "raw_text": text,
         "name": extract_name(text),
