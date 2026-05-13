@@ -10,17 +10,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Required for subtree to work
-          lfs: true
-
-      - name: Config Git
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          fetch-depth: 0
 
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # We use split to create a temporary branch of just the backend folder
-          git subtree push --prefix backend https://Baazigar111:$HF_TOKEN@huggingface.co/spaces/Baazigar111/talentai main
+          # 1. Create a temporary directory for the sync
+          mkdir temp_hf
+          # 2. Copy the contents of the backend folder into it
+          cp -r backend/* temp_hf/
+          # 3. Initialize a new git repo in that folder
+          cd temp_hf
+          git init
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          # 4. Add files and push to HF
+          git add .
+          git commit -m "Sync from GitHub"
+          git push --force https://Baazigar111:$HF_TOKEN@huggingface.co/spaces/Baazigar111/talentai-backend main
