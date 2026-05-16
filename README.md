@@ -8,7 +8,6 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com)
 [![Groq](https://img.shields.io/badge/Groq-Llama%203.3%2070B-F55036?style=flat-square)](https://groq.com)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Deploy](https://img.shields.io/badge/Deploy-Hugging%20Face-FFD21E?style=flat-square&logo=huggingface)](https://huggingface.co)
 
 **A completely free, AI-powered ATS that parses resumes, ranks candidates semantically, and lets you chat with your candidate database using LLMs.**
@@ -16,14 +15,6 @@
 [Live Demo](https://your-vercel-url.vercel.app) · [Backend API](https://your-hf-url.hf.space/docs) · [Report Bug](https://github.com/Baazigar111/talentai/issues)
 
 </div>
-
----
-
-## 📸 Screenshots
-
-| Dashboard | Candidates | AI Chat |
-|---|---|---|
-| ![Dashboard](https://via.placeholder.com/300x200/FFE000/111111?text=Dashboard) | ![Candidates](https://via.placeholder.com/300x200/4361EE/FFFFFF?text=Candidates) | ![Chat](https://via.placeholder.com/300x200/06D6A0/111111?text=AI+Chat) |
 
 ---
 
