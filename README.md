@@ -12,7 +12,7 @@
 
 **A completely free, AI-powered ATS that parses resumes, ranks candidates semantically, and lets you chat with your candidate database using LLMs.**
 
-[Live Demo](https://your-vercel-url.vercel.app) · [Backend API](https://your-hf-url.hf.space/docs) · [Report Bug](https://github.com/Baazigar111/talentai/issues)
+[Live Demo](https://talentai-henna.vercel.app) · [Backend API](https://your-hf-url.hf.space/docs) · [Report Bug](https://github.com/Baazigar111/talentai/issues)
 
 </div>
 
